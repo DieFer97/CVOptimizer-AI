@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Tema “base” para modo oscuro:
+         hereda de la misma clase Material3 DayNight,
+         pero redefine únicamente los atributos de color oscuro. -->
+    <style name="Base.Theme.Cvoptimizer" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/cardview_shadow_start_color</item>
+        <item name="colorPrimaryContainer">@color/cardview_shadow_end_color</item>
+        <item name="colorOnPrimary">@color/material_dynamic_secondary0</item>
+        <!-- …otros items para modo oscuro… -->
+    </style>
+
+    <!-- No es obligatorio volver a declarar Theme.Cvoptimizer aquí,
+         porque hereda del Base.Theme.Cvoptimizer que ya acabas de definir. -->
+    <style name="Theme.Cvoptimizer" parent="Base.Theme.Cvoptimizer" />
+</resources>

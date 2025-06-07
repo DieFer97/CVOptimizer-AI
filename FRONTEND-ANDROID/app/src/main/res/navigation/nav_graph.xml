@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.cvoptimizer.MainFragment"
+        android:label="MainFragment">
+        <action
+            android:id="@+id/action_main_to_history"
+            app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_main_to_analysis"
+            app:destination="@id/analysisFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.cvoptimizer.HistoryFragment"
+        android:label="HistoryFragment">
+        <action
+            android:id="@+id/action_history_to_main"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_history_to_results"
+            app:destination="@id/resultsFragment" />
+    </fragment>
+
+    <!-- Aquí movemos los <argument> dentro de analysisFragment -->
+    <fragment
+        android:id="@+id/analysisFragment"
+        android:name="com.example.cvoptimizer.AnalysisFragment"
+        android:label="AnalysisFragment">
+        <!-- ↓ Los argumentos tienen que ir CORRECTAMENTE dentro del <fragment>, no dentro del <action> -->
+        <argument
+            android:name="file_name"
+            app:argType="string" />
+        <argument
+            android:name="file_size"
+            app:argType="string" />
+        <argument
+            android:name="file_type"
+            app:argType="string" />
+        <!-- Las acciones van fuera de aquí -->
+        <action
+            android:id="@+id/action_analysis_to_results"
+            app:destination="@id/resultsFragment" />
+        <action
+            android:id="@+id/action_analysis_to_main"
+            app:destination="@id/mainFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resultsFragment"
+        android:name="com.example.cvoptimizer.ResultsFragment"
+        android:label="ResultsFragment">
+        <action
+            android:id="@+id/action_results_to_main"
+            app:destination="@id/mainFragment" />
+    </fragment>
+</navigation>

@@ -1,0 +1,16 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Tema “base” (modo claro) -->
+    <style name="Base.Theme.Cvoptimizer" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Aquí pones los colores/atributos comunes en modo claro -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryContainer">@color/cardview_shadow_end_color</item>
+        <item name="colorOnPrimary">@color/cardview_shadow_start_color</item>
+        <!-- …otros items que necesites para tu tema claro… -->
+    </style>
+
+    <!-- Tema final que usará la aplicación (modo claro por defecto) -->
+    <style name="Theme.Cvoptimizer" parent="Base.Theme.Cvoptimizer">
+        <!-- Si en modo claro quieres re-definir algo puntual, lo pones aquí.
+             Por ejemplo, si no hay nada que cambiar, este bloque puede quedar vacío. -->
+    </style>
+</resources>
