@@ -27,40 +27,55 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         viewBinding = true
+        dataBinding = true // Habilítalo solo si usas <layout> en tus XMLs
     }
 }
 
 dependencies {
+    // Core Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.glide)
+
+    // UI
     implementation(libs.androidx.cardview)
     implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.activity)
+
+    // Navegación
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    // Retrofit + OkHttp (evita duplicados de Gson)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+
+    // Gson (solo si no viene ya con retrofit.converter.gson)
+    implementation(libs.gson)
+
+    // Glide (para imágenes)
+    implementation(libs.glide)
+
+    // Corrutinas
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.okhttp3:okhttp:4.9.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
-    
-    // Para manejo de permisos
-    implementation ("com.karumi:dexter:6.2.0")
-
-    // Para BottomSheetDialog
-    implementation ("com.google.android.material:material:1.9.0")
 }

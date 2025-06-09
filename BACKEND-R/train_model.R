@@ -3,20 +3,22 @@ library(randomForest)
 library(caret)
 library(tm)
 
-datos <- read.csv("cv_samples/cv_data.csv", stringsAsFactors = FALSE, encoding = "UTF-8") # nolint
+datos <- read.csv("cv_samples/cv_data.csv", stringsAsFactors = FALSE, encoding = "UTF-8")
 
 prep_fun <- function(texto) {
   texto <- tolower(texto)
   texto <- removePunctuation(texto)
+  texto <- removeNumbers(texto)
   texto <- removeWords(texto, stopwords("es"))
-  return(texto) # nolint
+  texto <- stripWhitespace(texto)
+  return(texto)
 }
 
 tok_fun <- word_tokenizer
 
 it_train <- itoken(datos$texto_cv, preprocessor = prep_fun, tokenizer = tok_fun)
 
-vocab <- create_vocabulary(it_train)
+vocab <- create_vocabulary(it_train, ngram = c(1L, 2L))
 vocab <- prune_vocabulary(vocab, term_count_min = 2)
 vectorizer <- vocab_vectorizer(vocab)
 
@@ -24,7 +26,7 @@ dtm_train <- create_dtm(it_train, vectorizer)
 dtm_matrix <- as.matrix(dtm_train)
 
 set.seed(123)
-train_control <- trainControl(method = "cv", number = 5)
+train_control <- trainControl(method = "cv", number = 10)
 
 modelo <- train(
   x = dtm_matrix,

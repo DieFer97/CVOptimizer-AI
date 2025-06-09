@@ -9,7 +9,7 @@ import com.example.cvoptimizer.databinding.ItemResultBinding
 
 class ResultsAdapter(
     private val results: List<AnalysisResult>,
-    private val onDetailClick: (String) -> Unit
+    private val onDetailClick: (AnalysisResult) -> Unit
 ) : RecyclerView.Adapter<ResultsAdapter.ResultViewHolder>() {
 
     inner class ResultViewHolder(val binding: ItemResultBinding) : RecyclerView.ViewHolder(binding.root)
@@ -22,16 +22,14 @@ class ResultsAdapter(
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
         val result = results[position]
         with(holder.binding) {
-            Glide.with(root.context)
-                .load(result.iconUrl)
-                .into(areaIcon)
+            areaIcon.setImageResource(result.iconRes)
             areaTitle.text = result.area
             areaLevel.text = getLevelFromPercentage(result.percentage)
             percentageValue.text = "${result.percentage}%"
             percentageValue.setTextColor(Color.parseColor(result.color))
             progressBar.progress = result.percentage
             progressBar.progressTintList = android.content.res.ColorStateList.valueOf(Color.parseColor(result.color))
-            detailButton.setOnClickListener { onDetailClick(result.area) }
+            detailButton.setOnClickListener { onDetailClick(result) }
         }
     }
 

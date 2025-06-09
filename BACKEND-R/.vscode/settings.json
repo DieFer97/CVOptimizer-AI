@@ -12,6 +12,7 @@
     "economia",
     "estadisticas",
     "extraidos",
+    "httpuv",
     "Inicialización",
     "itoken",
     "jsonlite",
@@ -38,7 +39,6 @@
     "UZލE",
     "vectorizador",
     "vectorizer",
-    "Wwmxn",
-    "dataptr"
+    "Wwmxn"
   ]
 }

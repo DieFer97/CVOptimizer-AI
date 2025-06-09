@@ -1,9 +1,8 @@
 library(plumber)
 library(pdftools)
 library(tm)
-library(e1071)
-library(jsonlite)
 library(text2vec)
+library(jsonlite)
 
 modelo <- readRDS("modelo_cv.rds")
 vectorizer <- readRDS("vectorizer.rds")
@@ -11,8 +10,10 @@ vectorizer <- readRDS("vectorizer.rds")
 prep_fun <- function(texto) {
   texto <- tolower(texto)
   texto <- removePunctuation(texto)
+  texto <- removeNumbers(texto)
   texto <- removeWords(texto, stopwords("es"))
-  return(texto) # nolint
+  texto <- stripWhitespace(texto)
+  return(texto)
 }
 
 tok_fun <- word_tokenizer
@@ -20,7 +21,7 @@ tok_fun <- word_tokenizer
 extract_text_from_pdf <- function(pdf_path) {
   texto_pdf <- pdf_text(pdf_path)
   texto_completo <- paste(texto_pdf, collapse = " ")
-  return(texto_completo) # nolint
+  return(texto_completo)
 }
 
 predict_cv_area <- function(texto_completo) {
@@ -28,16 +29,16 @@ predict_cv_area <- function(texto_completo) {
   dtm <- create_dtm(it, vectorizer)
   dtm_matrix <- as.matrix(dtm)
 
-  probs <- predict(modelo, dtm_matrix, probability = TRUE)
-  porcentajes <- round(attr(probs, "probabilities") * 100, 1)
+  probs <- predict(modelo, dtm_matrix, type = "prob")
+  porcentajes <- floor(as.numeric(probs[1, ]) * 100) # Cambiado a floor para enteros
 
   resultados <- data.frame(
-    area = colnames(porcentajes),
-    porcentaje = as.numeric(porcentajes[1, ])
+    area = colnames(probs),
+    porcentaje = porcentajes
   )
   resultados <- resultados[order(resultados$porcentaje, decreasing = TRUE), ]
 
-  return(resultados) # nolint
+  return(resultados)
 }
 
 #* @apiTitle CV Analyzer API
@@ -45,10 +46,35 @@ predict_cv_area <- function(texto_completo) {
 
 #* Subir CV y obtener análisis
 #* @post /predict
+#* @serializer unboxedJSON
 function(req, res, file) {
+  cat("Verifying received file:\n")
+  cat("- file is NULL:", is.null(file), "\n")
+  if (!is.null(file)) {
+    cat("- Names in file:", paste(names(file), collapse = ", "), "\n")
+    cat("- Has data:", !is.null(file[[1]]), "\n")
+    cat("- Has filename:", !is.null(names(file)[1]), "\n")
+    if (!is.null(file[[1]])) {
+      cat("- Data size:", length(file[[1]]), "bytes\n")
+    }
+  }
+
+  if (is.null(file) || length(file) == 0) {
+    res$status <- 400
+    return(list(error = "No file received"))
+  }
+
+  filename <- names(file)[1]
+  file_data <- file[[1]]
+
+  if (is.null(filename) || is.null(file_data)) {
+    res$status <- 400
+    return(list(error = "Invalid file structure"))
+  }
+
   temp_dir <- tempdir()
-  temp_file <- file.path(temp_dir, file$filename)
-  writeBin(file$dataptr, temp_file)
+  temp_file <- file.path(temp_dir, filename)
+  writeBin(file_data, temp_file)
 
   texto_completo <- extract_text_from_pdf(temp_file)
 
@@ -56,11 +82,12 @@ function(req, res, file) {
 
   unlink(temp_file)
 
-  res$setContent-Type("application/json") # nolint
-  return(toJSON(list(resultados = resultados, error = NULL), auto_unbox = TRUE)) # nolint
+  res$setHeader("Content-Type", "application/json")
+  return(list(resultados = resultados, error = NULL))
 }
 
 #* @get /__docs__
+#* @serializer unboxedJSON
 function() {
-  swagger-ui() # nolint
+  swagger_ui()
 }
