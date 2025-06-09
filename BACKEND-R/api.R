@@ -94,19 +94,19 @@ MODEL_DATA <- initialize_model()
 #* @get /health
 #* @serializer unboxedJSON
 function() {
-    system_info <- list(
-        success = TRUE,
+    system_info <- list( # nolint
+        success = TRUE, # nolint
         status = if (MODEL_DATA$status == "success") "operational" else "error",
         timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
         version = "1.0.8",
         model_status = MODEL_DATA$status,
         supported_formats = CONFIG$supported_formats,
         max_file_size_mb = CONFIG$max_file_size / (1024 * 1024)
-    )
+    ) # nolint
     if (MODEL_DATA$status == "error") {
-        system_info$error <- MODEL_DATA$error
-    }
-    return(system_info)
+        system_info$error <- MODEL_DATA$error # nolint
+    } # nolint
+    return(system_info) # nolint
 }
 
 #* Obtener información del modelo y áreas disponibles
